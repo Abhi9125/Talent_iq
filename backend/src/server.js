@@ -2,6 +2,7 @@ import express from "express";
 import { ENV } from "./lib/env.js";
 // import { ENV } from "./lib/env";
 import path from "path";
+import { connectDB } from "./lib/db.js";
 
 const app = express();
 const __dirname = path.resolve(); // return current dir name
@@ -26,6 +27,15 @@ if (ENV.NODE_ENV === "production") {
   });
 }
 
-app.listen(3000, () => {
-  console.log("Server is running on PORT 3000:", ENV.PORT);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(3000, () => {
+      console.log("Server is running on PORT 3000:", ENV.PORT);
+    });
+  } catch (err) {
+    console.error("Server is not start get error");
+  }
+};
+
+startServer();
