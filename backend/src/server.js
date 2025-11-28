@@ -6,12 +6,6 @@ import path from "path";
 const app = express();
 const __dirname = path.resolve(); // return current dir name
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "server is running",
-  });
-});
-
 app.get("/books", (req, res) => {
   res.status(200).json({ msg: "this is the book end point" });
 });
