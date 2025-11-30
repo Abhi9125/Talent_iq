@@ -3,9 +3,19 @@ import { ENV } from "./lib/env.js";
 // import { ENV } from "./lib/env";
 import path from "path";
 import { connectDB } from "./lib/db.js";
+import cros from "cros";
+import { serve } from "inngest/express";
+import { functions, inngest } from "./lib/inngest.js";
 
 const app = express();
 const __dirname = path.resolve(); // return current dir name
+
+app.use(express.json());
+// credentials:true meaning?? => server allows a browser to include cookies on request
+app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
+
+// Set up the "/api/inngest" (recommended) routes with the serve handler
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.get("/books", (req, res) => {
   res.status(200).json({ msg: "this is the book end point" });
