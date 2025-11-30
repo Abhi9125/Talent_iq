@@ -3,6 +3,9 @@ import { ENV } from "./env.js";
 
 export const connectDB = async () => {
   try {
+    if (!ENV.DB_URL) {
+      throw new Error("DB_URL environment variable is not defined");
+    }
     const conn = await mongoose.connect(ENV.DB_URL);
 
     console.log("Connected to the MongoDB:", conn.connection.host);
