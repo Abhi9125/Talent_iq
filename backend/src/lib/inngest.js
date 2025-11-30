@@ -1,16 +1,49 @@
 import { Inngest } from "inngest";
+import { connectDB } from "./db";
+import User from "../models/User";
 
 export const inngest = new Inngest({ id: "my-app" });
 
 // Your new function:
-const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
-  async ({ event, step }) => {
-    await step.sleep("wait-a-moment", "1s");
-    return { message: `Hello ${event.data.email}!` };
+const newUser = inngest.createFunction(
+  {
+    id: "sync-user",
+  },
+  { event: "clerk/user.created" },
+
+  async ({ event }) => {
+    await connectDB();
+    const { user } = event.data;
+
+    const { id, first_name, last_name, image_url, email_addresses } = user;
+
+    await User.create({
+      clearId: id,
+      profilePic: image_url,
+      name: `${first_name} ${last_name}`,
+      email: email_addresses,
+    });
+  }
+);
+
+const deleteUser = inngest.deleteUser(
+  {
+    id: "delete-user",
+  },
+  { event: "clerk/user.deleted" },
+
+  async ({ event }) => {
+    await connectDB();
+
+    const { user } = event.data;
+
+    const { id } = user;
+
+    await User.deleteOne({
+      clearId: id,
+    });
   }
 );
 
 // Add the function to the exported array:
-export const functions = [helloWorld];
+export const functions = [newUser, deleteUser];
