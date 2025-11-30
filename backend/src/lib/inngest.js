@@ -20,13 +20,13 @@ const newUser = inngest.createFunction(
     await User.create({
       clearId: id,
       profilePic: image_url,
-      name: `${first_name} ${last_name}`,
-      email: email_addresses,
+      name: `${first_name || ""} ${last_name || ""}`,
+      email: email_addresses[0].email_addresses,
     });
   }
 );
 
-const deleteUser = inngest.deleteUser(
+const deleteUser = inngest.createFunction(
   {
     id: "delete-user",
   },
@@ -40,7 +40,7 @@ const deleteUser = inngest.deleteUser(
     const { id } = user;
 
     await User.deleteOne({
-      clearId: id,
+      clerkId: id,
     });
   }
 );
