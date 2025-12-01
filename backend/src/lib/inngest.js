@@ -17,10 +17,10 @@ const newUser = inngest.createFunction(
     const { id, first_name, last_name, image_url, email_addresses } =
       event.data;
     await User.create({
-      clearId: id,
+      clerkId: id,
       profilePic: image_url,
       name: `${first_name || ""} ${last_name || ""}`,
-      email: email_addresses[0].email_addresses,
+      email: email_addresses[0].email_address,
     });
   }
 );

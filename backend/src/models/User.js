@@ -4,18 +4,18 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
     },
     email: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     profilePic: {
       type: String,
-      require: true,
+      required: true,
     },
-    clearId: {
+    clerkId: {
       type: String,
       require: true,
       unique: true,
