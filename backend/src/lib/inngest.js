@@ -2,7 +2,7 @@ import { Inngest } from "inngest";
 import { connectDB } from "./db.js";
 import User from "../models/User.js";
 
-export const inngest = new Inngest({ id: "my-app" });
+export const inngest = new Inngest({ id: "talent-iq" });
 
 // Your new function:
 const newUser = inngest.createFunction(
@@ -14,6 +14,9 @@ const newUser = inngest.createFunction(
     const { id, first_name, last_name, image_url, email_addresses } =
       event.data;
 
+    console.log(
+      `id - ${id} , first_name - ${first_name}, last_name - ${last_name}, image_url - ${image_url}, email_addresses - ${email_addresses}`
+    );
     await User.create({
       clerkId: id,
       profilePic: image_url,
@@ -24,8 +27,8 @@ const newUser = inngest.createFunction(
 );
 
 const deleteUser = inngest.createFunction(
-  { id: "delete-user" },
-  { event: "clerk/user.deleted" }, //add
+  { id: "delete-user-from-mongodb" },
+  { event: "clerk/user.deleted" },
 
   async ({ event }) => {
     await connectDB();
