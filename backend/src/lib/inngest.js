@@ -6,49 +6,35 @@ export const inngest = new Inngest({ id: "my-app" });
 
 // Your new function:
 const newUser = inngest.createFunction(
-  {
-    id: "sync-user",
-  },
+  { id: "sync-user" },
   { event: "clerk/user.created" },
   async ({ event }) => {
-    console.log("RECEIVED CLERK DATA:", JSON.stringify(event.data, null, 2));
-    try {
-      await connectDB();
+    await connectDB();
 
-      const { id, first_name, last_name, image_url, email_addresses } =
-        event.data;
-      await User.create({
-        clerkId: id,
-        profilePic: image_url,
-        name: `${first_name || ""} ${last_name || ""}`,
-        email: email_addresses[0].email_address,
-      });
-    } catch (err) {
-      console.error("MONGOOSE ERROR:", err.message);
-      console.error("Full Error:", err);
-    }
+    const { id, first_name, last_name, image_url, email_addresses } =
+      event.data;
+
+    await User.create({
+      clerkId: id,
+      profilePic: image_url,
+      name: `${first_name || ""} ${last_name || ""}`,
+      email: email_addresses[0]?.email_address,
+    });
   }
 );
 
 const deleteUser = inngest.createFunction(
-  {
-    id: "delete-user",
-  },
+  { id: "delete-user" },
   { event: "clerk/user.deleted" },
 
   async ({ event }) => {
-    try {
-      await connectDB();
+    await connectDB();
 
-      const { id } = event.data;
+    const { id } = event.data;
 
-      await User.deleteOne({
-        clerkId: id,
-      });
-    } catch (err) {
-      console.error("MONGOOSE ERROR:", err.message);
-      console.error("Full Error:", err);
-    }
+    await User.deleteOne({
+      clerkId: id,
+    });
   }
 );
 
